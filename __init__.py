@@ -38,12 +38,11 @@ def replace_phi_with_deg(csv_file_path):
     df = pd.read_csv(csv_file_path)
     df['Phi(deg)'] = df['Phi'] * 180 / 3.14159265359
     df['Phi2(deg)'] = df['Phi2'] * 180 / 3.14159265359
-    df.to_csv(csv_file_path, index=False)
+    df.to_csv(csv_file_path, mode='w', index=False)
 
 
 data.to_csv("peak_data.csv", index=False)
 data.to_csv("peak_data_01.csv", index=False)
-
 
 replace_m_with_mc2('peak_data_01.csv')
 replace_phi_with_deg('peak_data_01.csv')
