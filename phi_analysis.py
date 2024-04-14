@@ -1,6 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-
+import aspose.words as aw
 # Read the CSV file into a DataFrame
 df = pd.read_csv('peak_data_01.csv')
 
@@ -93,42 +93,54 @@ for i in range(len(kuinkamonta)):
         y_tc2.append(y_c2)
         z_tc1.append(z_c1)
         z_tc2.append(z_c2)
-            
 
-for i in range(len(t2)):
-    plt.clf()
-    x = []
-    if i == 0:
-        for j in range(kuinkamonta[i+1]):
-            x.append(j)
-    else:
-        for j in range(kuinkamonta[i]):
-            x.append(j)
+def create_tra_analysis(x, i, t2):
     plt.step(x, t2[i])
     plt.xlabel('Tapahtuma')
     plt.ylabel('Transverse Momentum')
     plt.savefig('kuva'+str(i)+'.png')
     plt.clf()
+
+def create_x_analysis(x, i):
     plt.scatter(x, x_tc1[i])
     plt.scatter(x, x_tc2[i])
     plt.xlabel('Tapahtuma')
     plt.ylabel('X-Kulma')
     plt.savefig('kuvax'+str(i)+'.png')
     plt.clf()
+
+def create_y_analysis(x, i):
     plt.scatter(x, y_tc1[i])
     plt.scatter(x, y_tc2[i])
     plt.xlabel('Tapahtuma')
     plt.ylabel('Y-Kulma')
     plt.savefig('kuvay'+str(i)+'.png')
     plt.clf()
+def create_z_analysis(x, i):
     plt.scatter(x, z_tc1[i])
     plt.scatter(x, z_tc2[i])
     plt.xlabel('Tapahtuma')
     plt.ylabel('Z-Kulma')
     plt.savefig('kuvaz'+str(i)+'.png')
+    plt.clf()
+            
+def create_analysis_graphs():
+    for i in range(len(t2)):
+        plt.clf()
+        x = []
+        if i == 0:
+            for j in range(kuinkamonta[i+1]):
+                x.append(j)
+        else:
+            for j in range(kuinkamonta[i]):
+                x.append(j)
+        create_tra_analysis(x, i, t2)
+        create_x_analysis(x, i)
+        create_y_analysis(x, i)
+        create_z_analysis(x, i)
 
-
-def create_analysis():
+def create_analysis_tra_interval(interval):
+    last = 0
     for i in range(len(t2)):
         x = []
         if i == 0:
@@ -137,9 +149,19 @@ def create_analysis():
         else:
             for j in range(kuinkamonta[i]):
                 x.append(j)
+        
         plt.step(x, t2[i]) 
         plt.xlabel('Tapahtuma')
         plt.ylabel('Transverse Momentum')
-        plt.savefig('kuvaz'+str(i)+'.png')
+        if i == last + interval:
+            plt.savefig('f'+str(i)+'.png')
+            last = i
+            plt.clf()
+        elif i == 63:
+            plt.savefig('f'+str(i)+'.png')
+            plt.clf()
 
-#create_analysis()
+# Create the analysis graphs
+create_analysis_graphs()
+# Create the analysis graphs with 5 interval
+create_analysis_tra_interval(5)
