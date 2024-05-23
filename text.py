@@ -3,6 +3,56 @@ import numpy as np
 
 avg_list = {}
 course_list = {}
+course_list2 = {}
+w_avg = {}
+fy_courses = {
+    'lfy01': 1,
+    'lfy03': 1,
+    'lfy04': 1,
+    'lfy05': 1,
+    'lfy06': 1,
+    'lfy07': 1,
+    'lfy08': 1,
+}
+
+ke_courses = {
+    'lke01': 1,
+    'lke03': 1,
+    'lke04': 1,
+    'lke05': 1,
+    'lke06': 1,
+}
+
+lmaa_courses = {
+    'lmaa02': 2,
+    'lmaa03': 1,
+    'lmaa05': 1,
+    'lmaa06': 1.5,
+    'lmaa09': 0.5,
+    'lmaa08': 1,
+    'lmaa10': 1,
+    'lmaa11': 1,
+    'lmaa12': 1
+}
+
+bi_courses = {
+    'lbi01': 1,
+    'lbi02': 1,
+    'lbi04': 1,
+    'lbi05': 1,
+    'lbi06': 1,
+}
+
+mab_courses = {
+    'lmab02': 1,
+    'lmab03': 1,
+    'lmab04': 1,
+    'lmab05': 1,
+    'lmab06': 1,
+    'lmab08': 1,
+    'lmab09': 1,
+}
+
 
 def make_average_file(files):
     for file in files:
@@ -15,17 +65,21 @@ def make_average_file(files):
 def averageCalc(csv):
     df = pd.read_csv(csv)
     pdf = df.apply(pd.to_numeric, errors='coerce')
-    avg = pdf.mean()
-    colum_len = 0
-    for i in range(1, len(avg)):
-            colum_len += 1
-            if np.isnan(avg[i]):
-                colum_len -= 1
     true_avg = 0
-    for i in range(1, len(avg)):
-        if np.isnan(avg[i]):
+    course_num = 0
+
+    for i in range(1, len(pdf.columns)):
+        if pdf[pdf.columns[i]] == 'lke02' or pdf[pdf.columns[i]] == 'lbi03' or pdf[pdf.columns[i]] == 'lfy02' or pdf[pdf.columns[i]] == 'lmaa04' or pdf[pdf.columns[i]] == 'lmaa07' or pdf[pdf.columns[i]] == 'lmab07':
             continue
-        true_avg += avg[i]
+        courseName = pdf.columns[i] + csv
+        for j in range(0, len(pdf.index)):
+            if np.isnan(pdf[pdf.columns[i]][j]):
+                continue
+            course_num += 1
+            true_avg += pdf[pdf.columns[i]][j]
+        course_list2[courseName] = true_avg/course_num
+    avg = calculate_w_average(course_list2)
+    course_list2 = {}
     for i in range(1, len(pdf.columns)):
         courseName = pdf.columns[i] + csv
         amountofPeople = 0
@@ -35,8 +89,25 @@ def averageCalc(csv):
                 continue
             amountofPeople += 1
         course_list[courseName] = amountofPeople
-    return true_avg/colum_len
+    return avg
 
+    
+
+def calculate_w_average(list):
+    for key in list:
+        if key in fy_courses:
+            list[key] = list[key] * fy_courses[key]
+        elif key in ke_courses:
+            list[key] = list[key] * ke_courses[key]
+        elif key in lmaa_courses:
+            list[key] = list[key] * lmaa_courses[key]
+        elif key in bi_courses:
+            list[key] = list[key] * bi_courses[key]
+        elif key in mab_courses:
+            list[key] = list[key] * mab_courses[key]
+
+    return(list)
+    
     
 
 avg_lista = ['vsk21aFysiikka.csv',
